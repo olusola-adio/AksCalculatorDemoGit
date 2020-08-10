@@ -32,7 +32,7 @@ namespace AksCalculator
                     Contact = new Contact
                     {
                         Name = "Olusola Adio",
-                        Email = "solaadio@yahoo.com",
+                        Email = "fictitious@yahoo.com",
                         Url = "https://twitter.com/iLogion"
                     },
                     License = new License
