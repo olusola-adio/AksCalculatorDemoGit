@@ -27,7 +27,7 @@ namespace AksCalculator
                 {
                     Version = "v1",
                     Title = "AksCalculator API",
-                    Description = "Implementation of AksCalculator in ASP.NET Core Web API deployed to AKS",
+                    Description = "Implementation of AksCalculator in ASP.NET Core Web API deployed into AKS",
                     TermsOfService = "None",
                     Contact = new Contact
                     {
