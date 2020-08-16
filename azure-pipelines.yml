@@ -85,7 +85,7 @@ stages:
               inline: '{ "kind": "Namespace", "apiVersion": "v1", "metadata": { "name": "$(k8sNamespaceForPR)" }}'
             
           - task: Tokenization@2
-            displayName: 'Tokenization: ransform file akscalculator2.yml'
+            displayName: 'Tokenization: transform file akscalculator2.yml'
             inputs:
               SourcePath: $(Pipeline.Workspace)/manifests/
               TargetFileNames: akscalculator2.yml
