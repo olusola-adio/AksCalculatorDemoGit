@@ -95,7 +95,7 @@ echo 1>&2 "info: AZP_AGENT_RESPONSE = '$AZP_AGENT_RESPONSE'"
 
 if echo "$AZP_AGENT_RESPONSE" | jq . >/dev/null 2>&1; then
   AZP_AGENTPACKAGE_URL=$(echo "$AZP_AGENT_RESPONSE" \
-    | jq -r '.value | map([.version.major,.version.minor,.version.patch,.downloadUrl]) | sort | .[length-1] | .[3]')
+    | jq -r '.value | map([.version.major,.version.minor,.version.patch,.downloadUrl]) | .[0] | .[3]')
 fi
 
 echo 1>&2 "info: AZP_AGENTPACKAGE_URL = '$AZP_AGENTPACKAGE_URL'"
