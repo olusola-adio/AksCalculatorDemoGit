@@ -103,7 +103,7 @@ stages:
 
         
           - task: DeleteFiles@1
-            displayName: 'Delete tokenised ${{ parameters.ManifestFileName }} file'
+            displayName: 'Delete tokenised file'
             inputs:
               SourceFolder: $(Pipeline.Workspace)/manifests/
               Contents: akscalculator2.yml
