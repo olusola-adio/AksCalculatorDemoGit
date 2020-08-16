@@ -59,6 +59,10 @@ stages:
 
   jobs:
   - deployment: DeployPullRequest
+    variables:
+    - template: VariableTemplates\SharedEnvironmentVariables.yml
+    - template: VariableTemplates\DevEnvironmentVariables.yml
+    - group: KeyVault - dfc-dev-shared-kv
     displayName: Deploy Pull request
     condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
     pool:
@@ -79,6 +83,12 @@ stages:
               command: apply
               useConfigurationFile: true
               inline: '{ "kind": "Namespace", "apiVersion": "v1", "metadata": { "name": "$(k8sNamespaceForPR)" }}'
+            
+          - task: Tokenization@2
+            displayName: 'Tokenization: Transform file akscalculator2.yml'
+            inputs:
+              SourcePath: $(Pipeline.Workspace)/manifests/
+              TargetFileNames: akscalculator2.yml
 
           - task: KubernetesManifest@0
             displayName: Deploy to the new namespace in the Kubernetes cluster
@@ -90,6 +100,14 @@ stages:
                 $(Pipeline.Workspace)/manifests/akscalculator2.yml
               containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
+
+        
+          - task: DeleteFiles@1
+            displayName: 'Delete tokenised ${{ parameters.ManifestFileName }} file'
+            inputs:
+              SourceFolder: $(Pipeline.Workspace)/manifests/
+              Contents: akscalculator2.yml
+            condition: always()
           
           - task: Kubernetes@1
             name: get
