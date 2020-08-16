@@ -70,7 +70,7 @@ stages:
     - group: KeyVault - mon-dev-shared-kv
     - template: VariableTemplates\SharedEnvironmentVariables.yml
     - template: VariableTemplates\DevEnvironmentVariables.yml
-    dependsOn: Prepare
+    #dependsOn: Prepare
     displayName: Deploy Pull request
     condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
     pool:
