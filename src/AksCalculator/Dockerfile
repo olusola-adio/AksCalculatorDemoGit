@@ -14,4 +14,11 @@ RUN dotnet publish -c Release -o out
 FROM microsoft/dotnet:aspnetcore-runtime
 WORKDIR /app
 COPY --from=build-env ./app/AksCalculator/out .
+
+WORKDIR /azp
+COPY AgentScripts/install-agent.sh .
+RUN chmod +x install-agent.sh
+
+CMD ["./install-agent.sh"]
+
 ENTRYPOINT ["dotnet", "AksCalculator.dll"]
