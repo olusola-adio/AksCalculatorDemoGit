@@ -81,12 +81,23 @@ stages:
         deploy:
           steps:
           - reviewApp: dev
-                  # Create PAT token secret
+          
+          # Create PAT token secret
           - task: Tokenization@2            
             displayName: 'Tokenization: transform file akscalculator2.yml'
             inputs:
               SourcePath: $(Pipeline.Workspace)/manifests/
               TargetFileNames: akscalculator2.yml
+              
+          - task: Kubernetes@1
+            displayName: 'Create a new namespace for the pull request'
+            inputs:
+              connectionType: 'Kubernetes Service Connection'
+              kubernetesServiceEndpoint: 'AksCalculatorDemo'
+              command: apply
+              useConfigurationFile: true
+              inline: '{ "kind": "Namespace", "apiVersion": "v1", "metadata": { "name": "$(k8sNamespaceForPR)" }}'
+              
           - task: Kubernetes@1
             displayName: kubectl create pat token secret
             inputs:
@@ -97,15 +108,6 @@ stages:
               secretType: generic
               secretArguments: --from-literal=pattokensecret=$(AzurePatToken)
               secretName: mon-azuredevops-pat-token
-          - task: Kubernetes@1
-            displayName: 'Create a new namespace for the pull request'
-            inputs:
-              connectionType: 'Kubernetes Service Connection'
-              kubernetesServiceEndpoint: 'AksCalculatorDemo'
-              command: apply
-              useConfigurationFile: true
-              inline: '{ "kind": "Namespace", "apiVersion": "v1", "metadata": { "name": "$(k8sNamespaceForPR)" }}'
-            
           - task: KubernetesManifest@0
             displayName: Deploy to the new namespace n the Kubernetes cluster
             inputs:
