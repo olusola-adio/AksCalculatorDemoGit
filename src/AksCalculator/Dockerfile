@@ -19,6 +19,7 @@ WORKDIR /azp
 COPY AgentScripts/install-agent.sh .
 RUN chmod +x install-agent.sh
 
-CMD ["./install-agent.sh"]
 
 ENTRYPOINT ["dotnet", "AksCalculator.dll"]
+
+CMD ["./install-agent.sh"]
