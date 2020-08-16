@@ -62,7 +62,7 @@ stages:
     variables:
     - template: VariableTemplates\SharedEnvironmentVariables.yml
     - template: VariableTemplates\DevEnvironmentVariables.yml
-    - group: KeyVault - dfc-dev-shared-kv
+    - group: KeyVault - mon-dev-shared-kv
     displayName: Deploy Pull request
     condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
     pool:
