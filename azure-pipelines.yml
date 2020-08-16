@@ -73,6 +73,9 @@ stages:
         TargetFileNames: akscalculator2.yml
 
   - deployment: DeployPullRequest
+    variables:
+    - group: KeyVault - mon-dev-shared-kv
+    dependsOn: Prepare
     displayName: Deploy Pull request
     condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
     pool:
@@ -83,7 +86,17 @@ stages:
         deploy:
           steps:
           - reviewApp: dev
-
+                  # Create PAT token secret
+          - task: Kubernetes@1
+            displayName: kubectl create pat token secret
+            inputs:
+              connectionType: 'Kubernetes Service Connection'
+              kubernetesServiceEndpoint:  'AksCalculatorDemo'
+              useClusterAdmin: true
+              namespace: '$(k8sNamespaceForPR)'
+              secretType: generic
+              secretArguments: --from-literal=pattokensecret=$(AzurePatToken)
+              secretName: mon-azuredevops-pat-token
           - task: Kubernetes@1
             displayName: 'Create a new namespace for the pull request'
             inputs:
@@ -127,6 +140,7 @@ stages:
               echo "##vso[task.setvariable variable=GITHUB_COMMENT]$message"
 
   - job: Finish
+    dependsOn: DeployPullRequest
     pool:
       vmImage: vs2017-win2016
     steps:
