@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: akscalculator 
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: akscalculator
@@ -19,14 +19,14 @@ spec:
           - containerPort: 80
           resources:
             requests:
-              cpu: 500m
+              cpu: 400m
               memory: "1G"
             limits:
-              cpu: 500m
-              memory: "2G"
+              cpu: 400m
+              memory: "1G"
           env:
           - name: AZP_AGENT_NAME
-            value: ncs-jmeter-__NCSAzureDevOpsAgentsJMeterTag__-agent-1
+            value: my-new-pool-__NCSAzureDevOpsAgentsJMeterTag__-agent-1
           - name: AZP_POOL
             value: 'my-new-pool'
           - name: AZP_TOKEN
