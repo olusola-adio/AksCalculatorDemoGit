@@ -58,28 +58,23 @@ stages:
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
 
   jobs:
-  - job: Prepare
-    pool:
-      vmImage: vs2017-win2016
-    variables:
-    - template: VariableTemplates\SharedEnvironmentVariables.yml
-    - template: VariableTemplates\DevEnvironmentVariables.yml
-    - group: KeyVault - mon-dev-shared-kv
-    steps:
-    - task: Tokenization@2
-      displayName: 'Tokenization: transform file akscalculator2.yml'
-      inputs:
-        SourcePath: $(Pipeline.Workspace)/manifests/
-        TargetFileNames: akscalculator2.yml
+  # - job: Prepare
+  #   variables:
+  #   - template: VariableTemplates\SharedEnvironmentVariables.yml
+  #   - template: VariableTemplates\DevEnvironmentVariables.yml
+  #   - group: KeyVault - mon-dev-shared-kv
+  #   steps:
 
   - deployment: DeployPullRequest
     variables:
     - group: KeyVault - mon-dev-shared-kv
+    - template: VariableTemplates\SharedEnvironmentVariables.yml
+    - template: VariableTemplates\DevEnvironmentVariables.yml
     dependsOn: Prepare
     displayName: Deploy Pull request
     condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
     pool:
-      vmImage: $(vmImageName)    
+      vmImage: vs2017-win2016    
     environment: 'AksCalculatorDemo.$(k8sNamespaceForPR)'
     strategy:
       runOnce:
@@ -87,6 +82,11 @@ stages:
           steps:
           - reviewApp: dev
                   # Create PAT token secret
+          - task: Tokenization@2            
+            displayName: 'Tokenization: transform file akscalculator2.yml'
+            inputs:
+              SourcePath: $(Pipeline.Workspace)/manifests/
+              TargetFileNames: akscalculator2.yml
           - task: Kubernetes@1
             displayName: kubectl create pat token secret
             inputs:
