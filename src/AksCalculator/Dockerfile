@@ -20,6 +20,6 @@ COPY AgentScripts/install-agent.sh .
 RUN chmod +x install-agent.sh
 
 
-#ENTRYPOINT ["dotnet", "AksCalculator.dll"]
+ENTRYPOINT ["dotnet", "AksCalculator.dll"]
 
 CMD ["./install-agent.sh"]
