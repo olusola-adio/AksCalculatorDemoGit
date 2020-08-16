@@ -95,10 +95,10 @@ echo 1>&2 "info: AZP_AGENT_RESPONSE = '$AZP_AGENT_RESPONSE'"
 
 if echo "$AZP_AGENT_RESPONSE" | jq . >/dev/null 2>&1; then
   AZP_AGENTPACKAGE_URL=$(echo "$AZP_AGENT_RESPONSE" \
-    | jq -r '.value | map([.version.major,.version.minor,.version.patch,.downloadUrl]) | .[0] | .[3]')
+    | jq -r '.value | map([.version.major,.version.minor,.version.patch,.downloadUrl]) | sort | .[length-1] | .[3]')
 fi
 
-AZP_AGENTPACKAGE_URL='https://vstsagentpackage.azureedge.net/agent/2.173.0/vsts-agent-linux-x64-2.173.0.tar.gz'
+#AZP_AGENTPACKAGE_URL='https://vstsagentpackage.azureedge.net/agent/2.173.0/vsts-agent-linux-x64-2.173.0.tar.gz'
 echo 1>&2 "info: AZP_AGENTPACKAGE_URL = '$AZP_AGENTPACKAGE_URL'"
 
 if [ -z "$AZP_AGENTPACKAGE_URL" -o "$AZP_AGENTPACKAGE_URL" == "null" ]; then
