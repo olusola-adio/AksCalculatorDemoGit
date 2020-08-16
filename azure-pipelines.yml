@@ -91,7 +91,7 @@ stages:
               TargetFileNames: akscalculator2.yml
 
           - task: KubernetesManifest@0
-            displayName: Deploy to the new namespace in the Kubernetes cluster
+            displayName: Deploy to the new namespace n the Kubernetes cluster
             inputs:
               kubernetesServiceConnection: 'AksCalculatorDemo'
               action: deploy
