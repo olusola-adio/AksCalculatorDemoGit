@@ -22,7 +22,7 @@ COPY --from=build-env ./app/AksCalculator/out .
 #RUN add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
 
 RUN apt-get install --no-install-recommends \
-#    ca-certificates \
+    ca-certificates \
     jq 
 #    git \
 #    iputils-ping \
