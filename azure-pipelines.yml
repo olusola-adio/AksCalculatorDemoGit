@@ -108,6 +108,7 @@ stages:
               secretType: generic
               secretArguments: --from-literal=pattokensecret=$(AzurePatToken)
               secretName: mon-azuredevops-pat-token
+              forceUpdate: true
           - task: KubernetesManifest@0
             displayName: Deploy to the new namespace n the Kubernetes cluster
             inputs:
@@ -119,40 +120,39 @@ stages:
               containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
                     
-          - task: Kubernetes@1
-            name: get
-            displayName: 'Get services in the new namespace'
-            continueOnError: true
-            inputs:
-              command: get
-              connectionType: 'Kubernetes Service Connection'
-              kubernetesServiceEndpoint: 'AksCalculatorDemo'
-              namespace: $(k8sNamespaceForPR)
-              arguments: svc
-              outputFormat: jsonpath=http://{.items[0].status.loadBalancer.ingress[0].ip}:{.items[0].spec.ports[0].port}
-              
-          # Getting the IP of the deployed service and writing it to a variable for posing comment
-          # - script: |
-          #     url="$(get.KubectlOutput)"
-          #     message="Your review app has been deployed"
-          #     if [ ! -z "$url" -a "$url" != "http://:" ] 
-          #     then
-          #       message="${message} and is available at $url.<br><br>[Learn More](https://aka.ms/testwithreviewapps) about how to test and provide feedback for the app."
-          #     fi
-          #     echo "##vso[task.setvariable variable=GITHUB_COMMENT]$message"
-
   - job: Finish
     dependsOn: DeployPullRequest
     condition: always()
     pool:
-      vmImage: vs2017-win2016
+      vmImage:  $(vmImageName)
     steps:
     - task: DeleteFiles@1
       displayName: 'Delete tokenised file'
       inputs:
         SourceFolder: $(Pipeline.Workspace)/manifests/
         Contents: akscalculator2.yml
-
+    - task: Kubernetes@1
+      name: get
+      displayName: 'Get services in the new namespace'
+      continueOnError: true
+      inputs:
+        command: get
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'AksCalculatorDemo'
+        namespace: $(k8sNamespaceForPR)
+        arguments: svc
+        outputFormat: jsonpath=http://{.items[0].status.loadBalancer.ingress[0].ip}:{.items[0].spec.ports[0].port}
+          
+      # Getting the IP of the deployed service and writing it to a variable for posing comment
+    - script: |
+        url="$(get.KubectlOutput)"
+        message="Your review app has been deployed"
+        if [ ! -z "$url" -a "$url" != "http://:" ] 
+        then
+          message="${message} and is available at $url.<br><br>[Learn More](https://aka.ms/testwithreviewapps) about how to test and provide feedback for the app."
+        fi
+        echo "##vso[task.setvariable variable=GITHUB_COMMENT]$message"
+        
 - stage: DeployDEVStage
   displayName: Deploy DEV stage
   dependsOn: Build
