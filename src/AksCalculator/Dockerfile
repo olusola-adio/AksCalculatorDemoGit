@@ -35,6 +35,12 @@ WORKDIR /azp
 COPY AgentScripts/install-agent.sh .
 RUN chmod +x install-agent.sh
 
+WORKDIR /supervisor
+COPY Supervisor/supervisord.conf .
+RUN chmod +x supervisord.conf
+
 #ENTRYPOINT ["dotnet", "AksCalculator.dll"]
 
-CMD ["./install-agent.sh"]
+#CMD ["./install-agent.sh"]
+
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/supervisor/supervisord.conf"]
