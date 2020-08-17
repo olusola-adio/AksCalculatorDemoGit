@@ -21,6 +21,7 @@ RUN apt-get update
 
 RUN apt-get install -y --no-install-recommends \
     ca-certificates \
+    git \
     jq 
 # curl install returns broken package error if installed alongside other packages
 RUN apt-get install -y --no-install-recommends curl
