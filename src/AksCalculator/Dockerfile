@@ -26,10 +26,13 @@ RUN apt-get install -y --no-install-recommends \
 RUN apt-get install -y --no-install-recommends curl
 # Finished installing dependencies for Azure DevOps agent
 
-WORKDIR /azp
+WORKDIR /data
 COPY AgentScripts/install-agent.sh .
 RUN chmod +x install-agent.sh
 
+WORKDIR /azp
+COPY AgentScripts/install-agent.sh .
+RUN chmod +x install-agent.sh
 
 #ENTRYPOINT ["dotnet", "AksCalculator.dll"]
 

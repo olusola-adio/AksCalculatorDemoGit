@@ -146,6 +146,9 @@ stages:
           message="${message} and is available at $url.<br><br>[Learn More](https://aka.ms/testwithreviewapps) about how to test and provide feedback for the app."
         fi
         echo "##vso[task.setvariable variable=GITHUB_COMMENT]$message"
+    - bash: 'rm -rf /data'
+      displayName: 'Bash Script: Run jMeter Test'
+      workingDirectory: $(Agent.TempDirectory)
         
 - stage: DeployDEVStage
   displayName: Deploy DEV stage
