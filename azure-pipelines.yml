@@ -76,7 +76,6 @@ stages:
           steps:
           - reviewApp: dev
           
-          # Create PAT token secret
           - task: Tokenization@2            
             displayName: 'Tokenization: transform file akscalculator2.yml'
             inputs:
@@ -92,6 +91,7 @@ stages:
               useConfigurationFile: true
               inline: '{ "kind": "Namespace", "apiVersion": "v1", "metadata": { "name": "$(k8sNamespaceForPR)" }}'
               
+          # Create PAT token secret
           - task: Kubernetes@1
             displayName: kubectl create pat token secret
             inputs:
@@ -114,7 +114,7 @@ stages:
               containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
                     
-  - job: Finish
+  - job: CleanUp
     dependsOn: DeployPullRequest
     condition: always()
     pool:
@@ -146,8 +146,9 @@ stages:
           message="${message} and is available at $url.<br><br>[Learn More](https://aka.ms/testwithreviewapps) about how to test and provide feedback for the app."
         fi
         echo "##vso[task.setvariable variable=GITHUB_COMMENT]$message"
+
   - job: BashJob
-    dependsOn: Finish
+    dependsOn: CleanUp
     condition: succeeded()
     pool:
       name: 'my-new-pool'
