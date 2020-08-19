@@ -103,6 +103,11 @@ RUN apt-get update \
         libunwind8 \
         netcat
 
+
+WORKDIR /data
+COPY AgentScripts/install-agent.sh .
+RUN chmod +x install-agent.sh
+
 WORKDIR /azp
 
 COPY ./AgentScripts/start.sh .
