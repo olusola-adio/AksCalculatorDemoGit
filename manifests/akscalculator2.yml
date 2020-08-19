@@ -4,6 +4,7 @@ metadata:
   name: akscalculator 
 spec:
   replicas: 1
+  progressDeadlineSeconds: 1800
   selector:
     matchLabels:
       app: akscalculator
