@@ -105,7 +105,7 @@ RUN apt-get update \
 
 
 WORKDIR /data
-COPY AgentScripts/install-agent.sh .
+COPY ./AgentScripts/install-agent.sh .
 RUN chmod +x install-agent.sh
 
 WORKDIR /azp
