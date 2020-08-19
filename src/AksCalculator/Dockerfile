@@ -78,7 +78,12 @@ FROM microsoft/vsts-agent
 ENV VSTS_AGENT='$(hostname)-agent'
 ENV VSTS_WORK='/var/vsts/$VSTS_AGENT'
 
+WORKDIR /data
+COPY ./AgentScripts/install-agent.sh .
+RUN chmod +x install-agent.sh
 
+
+WORKDIR /azp
 COPY ./AgentScripts/start.sh .
 RUN chmod +x start.sh
 
