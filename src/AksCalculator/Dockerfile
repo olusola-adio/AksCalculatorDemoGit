@@ -27,6 +27,15 @@ RUN apt-get install -y --no-install-recommends \
 RUN apt-get install -y --no-install-recommends curl
 # Finished installing dependencies for Azure DevOps agent
 
+# install PowerShell
+RUN apt-get install wget
+RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
+RUN dpkg -i packages-microsoft-prod.deb
+RUN apt-get update
+RUN add-apt-repository universe
+RUN apt-get install -y powershell
+
+
 WORKDIR /data
 COPY AgentScripts/install-agent.sh .
 RUN chmod +x install-agent.sh
