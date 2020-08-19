@@ -15,7 +15,7 @@ RUN dotnet publish -c Release -o out
 #FROM microsoft/dotnet:aspnetcore-runtime
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
-COPY --from=build-env ./app/AksCalculator/out .
+COPY --from=build-env ./app/AksCalculator/AksCalculator/out .
 
 # Install dependencies for Azure DevOps agent
 RUN apt-get update
