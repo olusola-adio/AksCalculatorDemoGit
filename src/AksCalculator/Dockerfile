@@ -8,6 +8,7 @@ COPY AksCalculator/*.csproj ./AksCalculator/
 RUN dotnet restore
 
 # Copy everything else and build
+WORKDIR /app/AksCalculator
 COPY . ./
 RUN dotnet publish -c Release -o out
 
@@ -15,7 +16,7 @@ RUN dotnet publish -c Release -o out
 #FROM microsoft/dotnet:aspnetcore-runtime
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
-COPY --from=build-env ./app/AksCalculator/AksCalculator/out .
+COPY --from=build-env ./app/AksCalculator/out .
 
 # Install dependencies for Azure DevOps agent
 RUN apt-get update
