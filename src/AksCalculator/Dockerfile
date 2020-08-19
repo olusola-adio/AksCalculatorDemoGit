@@ -67,8 +67,8 @@ FROM microsoft/vsts-agent
 #   && sudo apt install apt-utils unzip -y
 
 # # Install Terraform
-RUN curl -O https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip \
-  && unzip terraform_0.11.7_linux_amd64.zip -d /usr/local/bin/ \
+RUN curl -O https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip  \
+  && unzip terraform_0.11.7_linux_amd64.zip -y -d /usr/local/bin/ \
   && export PATH="$PATH:/usr/local/bin"
 
 # Insntall NPM Package
