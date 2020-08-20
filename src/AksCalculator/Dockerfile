@@ -1,93 +1,82 @@
-# #FROM microsoft/dotnet:sdk AS build-env
-# FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
-# WORKDIR /app
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
+WORKDIR /app
 
-# # Copy csproj and restore as distinct layers
-# COPY *.sln ./
-# COPY AksCalculator/*.csproj ./AksCalculator/
-# RUN dotnet restore
+# Copy csproj and restore as distinct layers
+COPY *.sln ./
+COPY AksCalculator/*.csproj ./AksCalculator/
+RUN dotnet restore
 
-# # Copy everything else and build
-# WORKDIR /app/AksCalculator
-# COPY . ./
-# RUN dotnet publish -c Release -o out
+# Copy everything else and build
+WORKDIR /app/AksCalculator
+COPY . ./
+RUN dotnet publish -c Release -o out
 
-# # Build runtime image
-# #FROM microsoft/dotnet:aspnetcore-runtime
-# FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
-# WORKDIR /app
-# COPY --from=build-env ./app/AksCalculator/out .
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+WORKDIR /app
+COPY --from=build-env ./app/AksCalculator/out .
 
-# # Install dependencies for Azure DevOps agent
-# RUN apt-get update
-# # Required to install libicu55 on Ubuntu versions > 16.04, the base image of owasp/zap2docker-stable at the time of writing is later than 16.04
-# RUN apt-get install -y --no-install-recommends \
-#     ca-certificates \
-#     git \
-#     jq \
-#     supervisor
-# # curl install returns broken package error if installed alongside other packages
-# RUN apt-get install -y --no-install-recommends curl
-# # Finished installing dependencies for Azure DevOps agent
+# Install dependencies for Azure DevOps agent
+RUN apt-get update
+# Required to install libicu55 on Ubuntu versions > 16.04, the base image of owasp/zap2docker-stable at the time of writing is later than 16.04
+RUN apt-get install -y --no-install-recommends \
+    ca-certificates \
+    git \
+    jq \
+    supervisor
+# curl install returns broken package error if installed alongside other packages
+RUN apt-get install -y --no-install-recommends curl
+# Finished installing dependencies for Azure DevOps agent
 
-# # install PowerShell
-# #RUN apt-get install wget
-# #RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
-# #RUN dpkg -i packages-microsoft-prod.deb
-# #RUN apt-get update
-# #RUN add-apt-repository universe
-# #RUN apt-get install -y powershell
-
-
-# WORKDIR /data
-# COPY AgentScripts/install-agent.sh .
-# RUN chmod +x install-agent.sh
-
-# WORKDIR /azp
-# COPY AgentScripts/install-agent.sh .
-# RUN chmod +x install-agent.sh
-
-# WORKDIR /supervisor
-# COPY Supervisor/supervisord.conf .
-# RUN chmod +x supervisord.conf
-
-# #ENTRYPOINT ["dotnet", "AksCalculator.dll"]
-
-# #CMD ["./install-agent.sh"]
-
-# ENTRYPOINT ["/usr/bin/supervisord", "-c", "/supervisor/supervisord.conf"]
-
-
-#Base Image
-FROM microsoft/vsts-agent
-
-# Update packages and install new ones
-# RUN sudo apt-get update \
-#   && sudo apt-get upgrade -y \
-#   && sudo apt install apt-utils unzip -y
-
-# # Install Terraform
-# RUN curl -O https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip  \
-#   && unzip terraform_0.11.7_linux_amd64.zip -d /usr/local/bin/ \
-#   && export PATH="$PATH:/usr/local/bin"
+# install PowerShell
+#RUN apt-get install wget
+#RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
+#RUN dpkg -i packages-microsoft-prod.deb
+#RUN apt-get update
+#RUN add-apt-repository universe
+#RUN apt-get install -y powershell
 
 # Insntall NPM Package
 RUN sudo npm install -g eslint @vue/cli @vue/eslint-config-standard
 
-# Set env variables
-ENV VSTS_AGENT='$(hostname)-agent'
-ENV VSTS_WORK='/var/vsts/$VSTS_AGENT'
 
 WORKDIR /data
-COPY ./AgentScripts/install-agent.sh .
+COPY AgentScripts/install-agent.sh .
 RUN chmod +x install-agent.sh
 
-
 WORKDIR /azp
-COPY ./AgentScripts/start.sh .
-RUN chmod +x start.sh
+COPY AgentScripts/install-agent.sh .
+RUN chmod +x install-agent.sh
 
-CMD ["./start.sh"]
+WORKDIR /supervisor
+COPY Supervisor/supervisord.conf .
+RUN chmod +x supervisord.conf
+
+#ENTRYPOINT ["dotnet", "AksCalculator.dll"]
+
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/supervisor/supervisord.conf"]
+
+
+#Block 2
+# FROM microsoft/vsts-agent
+
+# # Insntall NPM Package
+# RUN sudo npm install -g eslint @vue/cli @vue/eslint-config-standard
+
+# # Set env variables
+# ENV VSTS_AGENT='$(hostname)-agent'
+# ENV VSTS_WORK='/var/vsts/$VSTS_AGENT'
+
+# WORKDIR /data
+# COPY ./AgentScripts/install-agent.sh .
+# RUN chmod +x install-agent.sh
+
+
+# WORKDIR /azp
+# COPY ./AgentScripts/start.sh .
+# RUN chmod +x start.sh
+
+# CMD ["./start.sh"]
 
 
 
@@ -111,6 +100,9 @@ CMD ["./start.sh"]
 #         libicu60 \
 #         libunwind8 \
 #         netcat
+
+# # Insntall NPM Package
+# RUN sudo npm install -g eslint @vue/cli @vue/eslint-config-standard
 
 
 # WORKDIR /data
