@@ -67,6 +67,9 @@ FROM microsoft/vsts-agent
 # Insntall NPM Package
 RUN sudo npm install -g eslint @vue/cli @vue/eslint-config-standard
 
+RUN apt-get update \
+        && apt-get install -y powershell
+
 # Set env variables
 ENV VSTS_AGENT='$(hostname)-agent'
 ENV VSTS_WORK='/var/vsts/$VSTS_AGENT'
