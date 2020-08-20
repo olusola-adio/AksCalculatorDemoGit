@@ -62,56 +62,56 @@
 
 
 #Block 2
-# FROM microsoft/vsts-agent
+FROM microsoft/vsts-agent
 
-# # Insntall NPM Package
-# RUN sudo npm install -g eslint @vue/cli @vue/eslint-config-standard
+# Insntall NPM Package
+RUN sudo npm install -g eslint @vue/cli @vue/eslint-config-standard
 
-# # Set env variables
-# ENV VSTS_AGENT='$(hostname)-agent'
-# ENV VSTS_WORK='/var/vsts/$VSTS_AGENT'
+# Set env variables
+ENV VSTS_AGENT='$(hostname)-agent'
+ENV VSTS_WORK='/var/vsts/$VSTS_AGENT'
 
-# WORKDIR /data
-# COPY ./AgentScripts/install-agent.sh .
-# RUN chmod +x install-agent.sh
+WORKDIR /data
+COPY ./AgentScripts/install-agent.sh .
+RUN chmod +x install-agent.sh
 
 
-# WORKDIR /azp
-# COPY ./AgentScripts/start.sh .
-# RUN chmod +x start.sh
+WORKDIR /azp
+COPY ./AgentScripts/start.sh .
+RUN chmod +x start.sh
 
-# CMD ["./start.sh"]
+CMD ["./start.sh"]
 
 
 
 
 #Block 3 working
-FROM ubuntu:18.04
+# FROM ubuntu:18.04
 
-# To make it easier for build and release pipelines to run apt-get,
-# configure apt to not require confirmation (assume the -y argument by default)
-ENV DEBIAN_FRONTEND=noninteractive
-RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
+# # To make it easier for build and release pipelines to run apt-get,
+# # configure apt to not require confirmation (assume the -y argument by default)
+# ENV DEBIAN_FRONTEND=noninteractive
+# RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
-RUN apt-get update \
-&& apt-get install -y --no-install-recommends \
-        ca-certificates \
-        curl \
-        jq \
-        git \
-        iputils-ping \
-        libcurl4 \
-        libicu60 \
-        libunwind8 \
-        netcat 
-        
-WORKDIR /data
-COPY ./AgentScripts/install-agent.sh .
-RUN chmod +x install-agent.sh
+# RUN apt-get update \
+# && apt-get install -y --no-install-recommends \
+#         ca-certificates \
+#         curl \
+#         jq \
+#         git \
+#         iputils-ping \
+#         libcurl4 \
+#         libicu60 \
+#         libunwind8 \
+#         netcat 
 
-WORKDIR /azp
+# WORKDIR /data
+# COPY ./AgentScripts/install-agent.sh .
+# RUN chmod +x install-agent.sh
 
-COPY ./AgentScripts/start.sh .
-RUN chmod +x start.sh
+# WORKDIR /azp
 
-CMD ["./start.sh"]
+# COPY ./AgentScripts/start.sh .
+# RUN chmod +x start.sh
+
+# CMD ["./start.sh"]
