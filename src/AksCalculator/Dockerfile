@@ -103,7 +103,8 @@ RUN apt-get update \
         libcurl4 \
         libicu60 \
         libunwind8 \
-        netcat
+        netcat \
+        sudo
 
 # Insntall NPM Package
 RUN sudo npm install -g eslint @vue/cli @vue/eslint-config-standard
