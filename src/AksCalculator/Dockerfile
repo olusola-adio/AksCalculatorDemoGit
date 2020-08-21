@@ -58,9 +58,6 @@ ENTRYPOINT ["dotnet", "AksCalculator.dll"]
 
 
 
-
-
-
 # #Block 2
 # FROM microsoft/vsts-agent
 
