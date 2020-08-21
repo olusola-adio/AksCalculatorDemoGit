@@ -18,9 +18,14 @@ spec:
           image: mondevappsharedcr.azurecr.io/akscalculator:v1
           ports:
           - containerPort: 80
+            resources:
+            requests:
+              cpu: 100m
+              memory: "200m"
+            limits:
+              cpu: 100m
+              memory: "200m"
           env:
-          # - name: AZP_AGENT_NAME
-          #   value: my-new-pool-__NCSAzureDevOpsAgentsJMeterTag__-agent-1
           - name: AZP_POOL
             value: 'my-new-pool'
           - name: AZP_TOKEN
@@ -32,13 +37,6 @@ spec:
             value: __AzureDevOpsUrl__
           securityContext:
             allowPrivilegeEscalation: false
-          volumeMounts:
-          - name: docker-graph-storage
-            mountPath: /var/run/docker.sock
-      volumes:
-      - name: docker-graph-storage
-        hostPath:
-            path: /var/run/docker.sock
 ---
 apiVersion: v1
 kind: Service
