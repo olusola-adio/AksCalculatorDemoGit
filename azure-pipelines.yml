@@ -25,8 +25,7 @@ variables:
   tag: '$(Build.BuildNumber)'
 
   # Agent VM image name
-  pool:
-      name: 'my-new-pool'
+
   
   # Name of the new namespace being created to deploy the PR changes.
   k8sNamespaceForPR: '$(system.pullRequest.pullRequestId)'
