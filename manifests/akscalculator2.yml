@@ -18,13 +18,13 @@ spec:
           image: mondevappsharedcr.azurecr.io/akscalculator:v1
           ports:
           - containerPort: 80
-            resources:
-            requests:
-              cpu: 100m
-              memory: "200m"
-            limits:
-              cpu: 100m
-              memory: "200m"
+          resources:
+          requests:
+            cpu: 100m
+            memory: "200m"
+          limits:
+            cpu: 100m
+            memory: "200m"
           env:
           - name: AZP_POOL
             value: 'my-new-pool'
