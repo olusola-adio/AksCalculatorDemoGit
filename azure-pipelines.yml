@@ -25,7 +25,7 @@ variables:
   tag: '$(Build.BuildNumber)'
 
   # Agent VM image name
-
+  vmImageName: 'ubuntu-latest'
   
   # Name of the new namespace being created to deploy the PR changes.
   k8sNamespaceForPR: '$(system.pullRequest.pullRequestId)'
@@ -68,7 +68,7 @@ stages:
     displayName: Deploy Pull request
     condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
     pool:
-      name: 'my-new-pool'  
+      name: 'my-new-pool'   
     environment: 'AksCalculatorDemo.$(k8sNamespaceForPR)'
     strategy:
       runOnce:
