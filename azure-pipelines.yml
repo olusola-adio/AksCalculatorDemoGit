@@ -68,7 +68,7 @@ stages:
     displayName: Deploy Pull request
     condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
     pool:
-      name: 'my-new-pool'   
+      vmImage: vs2017-win2016 
     environment: 'AksCalculatorDemo.$(k8sNamespaceForPR)'
     strategy:
       runOnce:
