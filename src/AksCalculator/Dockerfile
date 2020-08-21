@@ -1,20 +1,20 @@
-# FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
-# WORKDIR /app
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
+WORKDIR /app
 
-# # Copy csproj and restore as distinct layers
-# COPY *.sln ./
-# COPY AksCalculator/*.csproj ./AksCalculator/
-# RUN dotnet restore
+# Copy csproj and restore as distinct layers
+COPY *.sln ./
+COPY AksCalculator/*.csproj ./AksCalculator/
+RUN dotnet restore
 
-# # Copy everything else and build
-# WORKDIR /app/AksCalculator
-# COPY . ./
-# RUN dotnet publish -c Release -o out
+# Copy everything else and build
+WORKDIR /app/AksCalculator
+COPY . ./
+RUN dotnet publish -c Release -o out
 
-# # Build runtime image
-# FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
-# WORKDIR /app
-# COPY --from=build-env ./app/AksCalculator/out .
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+WORKDIR /app
+COPY --from=build-env ./app/AksCalculator/out .
 
 # # Install dependencies for Azure DevOps agent
 # RUN apt-get update
@@ -52,7 +52,7 @@
 # COPY Supervisor/supervisord.conf .
 # RUN chmod +x supervisord.conf
 
-# #ENTRYPOINT ["dotnet", "AksCalculator.dll"]
+ENTRYPOINT ["dotnet", "AksCalculator.dll"]
 
 # ENTRYPOINT ["/usr/bin/supervisord", "-c", "/supervisor/supervisord.conf"]
 
@@ -61,29 +61,21 @@
 
 
 
-#Block 2
-FROM microsoft/vsts-agent
+# #Block 2
+# FROM microsoft/vsts-agent
 
-# Insntall NPM Package
-RUN sudo npm install -g eslint @vue/cli @vue/eslint-config-standard
-
-RUN apt-get update \
-        && apt-get install -y powershell
-
-# Set env variables
-ENV VSTS_AGENT='$(hostname)-agent'
-ENV VSTS_WORK='/var/vsts/$VSTS_AGENT'
-
-WORKDIR /data
-COPY ./AgentScripts/install-agent.sh .
-RUN chmod +x install-agent.sh
+# # Insntall NPM Package
+# RUN sudo npm install -g eslint @vue/cli @vue/eslint-config-standard
+# WORKDIR /data
+# COPY ./AgentScripts/install-agent.sh .
+# RUN chmod +x install-agent.sh
 
 
-WORKDIR /azp
-COPY ./AgentScripts/start.sh .
-RUN chmod +x start.sh
+# WORKDIR /azp
+# COPY ./AgentScripts/start.sh .
+# RUN chmod +x start.sh
 
-CMD ["./start.sh"]
+# CMD ["./start.sh"]
 
 
 

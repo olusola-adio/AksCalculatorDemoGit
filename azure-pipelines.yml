@@ -25,7 +25,8 @@ variables:
   tag: '$(Build.BuildNumber)'
 
   # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  pool:
+      name: 'my-new-pool'
   
   # Name of the new namespace being created to deploy the PR changes.
   k8sNamespaceForPR: '$(system.pullRequest.pullRequestId)'
@@ -37,7 +38,7 @@ stages:
   - job: Build
     displayName: Build
     pool:
-      vmImage: $(vmImageName)
+      name: 'my-new-pool'
     steps:
     - task: Docker@2
       displayName: Build and push an image to container registry
@@ -68,7 +69,7 @@ stages:
     displayName: Deploy Pull request
     condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
     pool:
-      vmImage: vs2017-win2016    
+      name: 'my-new-pool'  
     environment: 'AksCalculatorDemo.$(k8sNamespaceForPR)'
     strategy:
       runOnce:
@@ -118,7 +119,7 @@ stages:
     dependsOn: DeployPullRequest
     condition: always()
     pool:
-      vmImage:  $(vmImageName)
+      name: 'my-new-pool'
     steps:
     - task: DeleteFiles@1
       displayName: 'Delete tokenised file'
@@ -146,22 +147,6 @@ stages:
           message="${message} and is available at $url.<br><br>[Learn More](https://aka.ms/testwithreviewapps) about how to test and provide feedback for the app."
         fi
         echo "##vso[task.setvariable variable=GITHUB_COMMENT]$message"
-
-  - job: BashJob
-    dependsOn: CleanUp
-    condition: succeeded()
-    pool:
-      name: 'my-new-pool'
-    steps:
-    - bash: 'ls -l /data'
-      displayName: 'Bash Script: Run jMeter Test'
-      workingDirectory: $(Agent.TempDirectory)
-    - bash: 'rm -rf /data'
-      displayName: 'Bash Script: Run jMeter Test'
-      workingDirectory: $(Agent.TempDirectory)
-    - bash: 'pwd'
-      displayName: 'Bash Script: Run jMeter Test'
-      workingDirectory: $(Agent.TempDirectory)
         
 - stage: DeployDEVStage
   displayName: Deploy DEV stage
