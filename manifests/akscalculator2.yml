@@ -18,13 +18,6 @@ spec:
           image: mondevappsharedcr.azurecr.io/akscalculator:v1
           ports:
           - containerPort: 80
-          resources:
-            requests:
-              cpu: 400m
-              memory: "1G"
-            limits:
-              cpu: 400m
-              memory: "1G"
           env:
           # - name: AZP_AGENT_NAME
           #   value: my-new-pool-__NCSAzureDevOpsAgentsJMeterTag__-agent-1
